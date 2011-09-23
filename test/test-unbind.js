@@ -9,22 +9,23 @@ var later = function(fun) {
 connection.addListener('ready', function () {
     puts("connected to " + connection.serverProperties.product);
 
-    var q = connection.queue('node-simple-queue');
-    var exchange = connection.exchange('node-simple-fanout', {type: 'fanout'});
+    connection.queue('node-simple-queue', function (q) {
+      var exchange = connection.exchange('node-simple-fanout', {type: 'fanout'});
 
-    exchange.on('open', function(){
+      exchange.on('open', function(){
 
-	q.bind(exchange, "");
-	q.subscribe(function(message){recvCount+=1;});
+        q.bind(exchange, "");
+        q.subscribe(function(message){recvCount+=1;});
 
-	exchange.publish('', body);
+        exchange.publish('', body);
 
-	q.unbind(exchange, "");
-	later(function(){
-	    exchange.publish('', body);
-	    later(function(){connection.end()});
-	});
-    });
+        q.unbind(exchange, "");
+        later(function(){
+          exchange.publish('', body);
+          later(function(){connection.end()});
+        });
+      });
+  });
 });
 
 process.addListener('exit', function () {
