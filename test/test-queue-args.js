@@ -13,7 +13,7 @@ function doCheck(conn1, qName) {
   conn1.queue( qName, {'arguments': args1 }, function(q1) {
     puts("queue declared");
     assert.deepEqual(q1.options.arguments, args1, 'arguments to not match');
-    var conn2 = amqp.createConnection({});
+    var conn2 = makeConnection({});
     conn2.on('ready', function() {
       var q2 = conn2.queue(
         qName, {'arguments': {'x-expires': 301}}, function() {

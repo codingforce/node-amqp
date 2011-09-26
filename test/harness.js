@@ -13,7 +13,11 @@ var implOpts = {
   defaultExchangeName: 'amq.topic'
 };
 
-global.connection = amqp.createConnection(options, implOpts);
+global.makeConnection = function() {
+  return amqp.createConnection(options, implOpts)
+};
+
+global.connection = makeConnection();
 
 global.connection.addListener('error', function (e) {
   throw e;
