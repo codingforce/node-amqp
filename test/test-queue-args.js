@@ -35,7 +35,7 @@ function doCheck(conn1, qName) {
 
 function cleanUp(conn, qName, actualTest) {
   // start with a clean slate: make sure queue doesn't exist
-  q = connection.queue(qName, {passive: true}, function (qName) {
+  var q = connection.queue(qName, {passive: true}, function () {
     q.destroy();
     q.on('queueDeleteOk', function() { return actualTest(connection, qName) });
   });
