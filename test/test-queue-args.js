@@ -9,12 +9,12 @@ connection.on('ready', function() {
 
 
 function doCheck(conn, qName) {
-  var args1 = {};
+  var args1 = {'x-expires': 30000};
   var q1 = conn.queue( qName, {'arguments': args1 }, function(q1) {
     puts("queue declared");
     assert.deepEqual(q1.options.arguments, args1, 'arguments to not match');
     var q2 = conn.queue(
-      qName, {'arguments': {'x-ha-policy': 'all'}}, function() {
+      qName, {'arguments': {'x-expires': 30001}}, function() {
         puts("second queue declared");
       }
     );
