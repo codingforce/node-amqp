@@ -904,7 +904,7 @@ exports.createConnection = function (connectionArgs, options) {
 
 Connection.prototype.setOptions = function (options) {
   var o  = {};
-  urlo = (options && options.url) ? urlOptions(options.url) : {};
+  var urlo = (options && options.url) ? urlOptions(options.url) : {};
   mixin(o, defaultOptions, urlo, options || {});
   this.options = o;
 };
@@ -1202,12 +1202,6 @@ Connection.prototype.queue = function (name /* options, openCallback */) {
     callback = arguments[1];
   }
 
-  if (name != '' && this.queues[name]) { // already declared? callback anyway
-    if (callback)
-      callback(this.queues[name]);
-    return this.queues[name];
-  }
-
   this.channelCounter++;
   var channel = this.channelCounter;
 
@@ -1238,12 +1232,6 @@ Connection.prototype.exchange = function (name, options, openCallback) {
 
   if (!options) options = {};
   if (name != '' && options.type === undefined) options.type = 'topic';
-
-  if (this.exchanges[name]) { // already declared? callback anyway
-    if (openCallback) 
-      openCallback(this.exchanges[name]);
-    return this.exchanges[name];
-  }
 
   this.channelCounter++;
   var channel = this.channelCounter;
