@@ -8,27 +8,24 @@ connection.on('ready', function() {
 });
 
 
-function doCheck(conn1, qName) {
+function doCheck(conn, qName) {
   var args1 = {};
-  conn1.queue( qName, {'arguments': args1 }, function(q1) {
+  var q1 = conn.queue( qName, {'arguments': args1 }, function(q1) {
     puts("queue declared");
     assert.deepEqual(q1.options.arguments, args1, 'arguments to not match');
-    var conn2 = makeConnection({});
-    conn2.on('ready', function() {
-      var q2 = conn2.queue(
-        qName, {'arguments': {'x-ha-policy': 'all'}}, function() {
-          puts("second queue declared");
-        }
-      );
-      q2.on('error', function(err) {
-        assert.equal(err.code, 406);
-        assert.ok(err.message.indexOf('PRECONDITION_FAILED') == 0);
-        conn1.end();
-        conn2.end();
-      });
-      q2.on('queueDeclareOk', function(event) {
-        assert.ok(false, 'queue should not have been created');
-      });
+    var q2 = conn.queue(
+      qName, {'arguments': {'x-ha-policy': 'all'}}, function() {
+        puts("second queue declared");
+      }
+    );
+    q2.on('error', function(err) {
+      assert.equal(err.code, 406);
+      assert.ok(err.message.indexOf('PRECONDITION_FAILED') == 0);
+      puts('redeclaration with different arguments raised exception');
+      conn.end();
+    });
+    q2.on('queueDeclareOk', function(event) {
+      assert.ok(false, 'queue should not have been created');
     });
   });
 };
