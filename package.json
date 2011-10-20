@@ -2,7 +2,6 @@
 , "description" : "AMQP driver for node"
 , "keywords" : [ "amqp" ]
 , "version" : "0.1.0"
-, "preferGlobal" : true
 , "author" : { "name" : "Ryan Dahl" }
 , "contributors" :
   [ { "name" : "Vasili Sviridov" }
